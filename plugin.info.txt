@@ -1,0 +1,7 @@
+base   fedauth
+author Aoi Karasu
+email  aoikarasu@gmail.com
+date   2012-06-09
+name   Federated Login Plugin
+desc   Enables  Enables your DokuWiki to provide users with Hybrid OAuth + OpenId federated login.
+url    http://www.dokuwiki.org/plugin:federate

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for fname in *.png
+do
+mv $fname ${fname/\.ico/}
+done

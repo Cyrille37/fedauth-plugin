@@ -1,0 +1,105 @@
+#fedauth__manager h2 {
+    margin-left: 0;
+}
+
+#fedauth__manager form {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+#fedauth__manager legend {
+    display: none;
+}
+
+#fedauth__manager fieldset {
+    width: auto;
+}
+
+#fedauth__manager .button {
+    margin: 0;
+}
+
+#fedauth__manager p,
+#fedauth__manager label {
+    text-align: left;
+}
+
+#fedauth__manager .hidden {
+    display: none;
+}
+
+/* IE won't understand but doesn't require it */
+#fedauth__manager input[disabled] {
+    color: #ccc;
+    border-color: #ccc;
+}
+
+#fedauth__manager .lprovs,
+#fedauth__manager .sprovs {
+    margin-left: 0;
+    text-align: left;
+}
+
+#fedauth__manager .lprovs fieldset,
+#fedauth__manager .sprovs fieldset {
+    color: #000;
+    background: #fff;
+    text-align: right;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+#fedauth__manager fieldset.even {
+    background: #eee;
+}
+
+#fedauth__manager .lprovs .legend,
+#fedauth__manager .sprovs .legend {
+    background: inherit;
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    line-height: 16px;
+    font-weight: normal;
+    text-align: left;
+    float: left;
+    padding: 0;
+    clear: none;
+    verical-align:middle;
+}
+
+/* to remove */
+#fedauth__manager .provid {
+    font-size: 0.8em;
+    color: #888;
+}
+
+#fedauth__manager .lprovs .enable,
+#fedauth__manager .sprovs .enable {
+    margin-top: 2px;
+    float: left;
+    width: auto;
+}
+
+#fedauth__manager .details {
+    padding: 5px;
+    border: dotted 1px red;
+}
+
+#fedauth__manager .lprovs fieldset.buttons,
+#fedauth__manager .sprovs fieldset.buttons {
+    border: none;
+}
+
+#fedauth__manager .lprovs fieldset.buttons .button,
+#fedauth__manager .sprovs fieldset.buttons .button {
+    float: left;
+}
+
+#fedauth__manager .floatimg {
+    margin: 0px 0.3em 0px 1em;
+    float: left;
+}

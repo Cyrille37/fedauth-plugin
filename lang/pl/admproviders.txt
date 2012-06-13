@@ -1,0 +1,23 @@
+====== Ustawienia logowania federacyjnego ======
+
+Na tej stronie możesz wybrać, którzy dostawcy autoryzacji maja być dostępni dla Twoich użytkowników podczas logowania.
+Możesz również ustawić kolejność wyświetlania przycisków dostawców oraz wybrać, które przyciski będą się wyświetlać na liście
+dużych przycisków, a które na liscie małych.
+
+===== Duże przyciski =====
+
+@LARGELIST@
+
+===== Małe przyciski =====
+
+@SMALLLIST@
+
+===== Dodaj nowego dostawcę =====
+
+Możesz dodać własnego dostawcę autoryzacji i skonfigurować dla niego ustawienia.
+Obrazki (małe i duże logo) dostawcy powinny być uprzednio załadowane do tej Wiki za pomocą Menadżera multimediów.
+
+**Uwaga:** Jeśli URL dostawcy autoryzacji typu [[http://openid.net/|OpenID]] ma zawierać nazwę użytkownika, wpisz **{username}**,
+np. ''%%http://mojdostawca.pl/{username}%%''
+
+@ADDPROVIDER@

@@ -1,0 +1,22 @@
+====== Manage Federated Login Providers ======
+
+On this page you can configure which authroization providers are available for your users to login with.
+You may as well set the order of provider buttons and size whether they should be large or small.
+
+===== Large Buttons =====
+
+@LARGELIST@
+
+===== Small Buttons =====
+
+@SMALLLIST@
+
+===== Add Custom Provider =====
+
+You can add your own provider setting. You should add at least small image for it.
+The images should be previously uploaded using Media Manager.
+
+**Note:** If the [[http://openid.net/|OpenID]] provider URL is to contain username, include **{username}** in the URL string,
+eg. ''%%http://myprovider.com/{username}%%''
+
+@ADDPROVIDER@
