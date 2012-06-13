@@ -71,12 +71,6 @@
     verical-align:middle;
 }
 
-/* to be removed */
-#fedauth__manager .provid {
-    font-size: 0.8em;
-    color: #888;
-}
-
 #fedauth__manager .lprovs .enable,
 #fedauth__manager .sprovs .enable {
     margin-top: 2px;
