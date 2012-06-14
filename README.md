@@ -3,7 +3,7 @@ Federated Login Plugin for DokuWiki
 
 -----
 
-**WARNING:** Currently the plugin is in its early development stage and it is strongly advised not to use it until futher notice!
+**WARNING:** Currently the plugin is in its early development stage and it is strongly advised not to use it until further notice!
 
 -----
 
