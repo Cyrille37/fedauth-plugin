@@ -76,7 +76,7 @@ class fa_provider {
     /**
      * Builds XHTML for selected image.
      */
-    public function getImageXHTML($size=PROV_SMALL) {
+    public function getImageXHTML($size=PROV_SMALL, $class='floatimg') {
         // select image source and size
         if ($size != PROV_SMALL) {
             $params = array('w' => 80, 'h' => 40);
@@ -98,7 +98,7 @@ class fa_provider {
             // media not found, use _noimage
             $src = getBaseURL() .'lib/plugins/fedauth/images/' . ($size != PROV_SMALL ? 'large/' : '')  . '_noimage.png';
         }
-        return '<img src="'.$src.'" class="floatimg" width="'.$params['w'].'" height="'.$params['h'].'" title="'.$this->getName().'" />';
+        return '<img src="'.$src.'" class="'.$class.'" width="'.$params['w'].'" height="'.$params['h'].'" title="'.$this->getName().'" />';
     }
 
     public function getName() {

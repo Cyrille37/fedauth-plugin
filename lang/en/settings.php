@@ -10,3 +10,4 @@
 $lang['adminsonly']      = 'Only admins are allowed to configure authorization providers';
 $lang['customloginform'] = 'Use the customized login form instead of adding federated login to bottom of the original login form';
 $lang['fedauthonly']     = 'Disable local authorization (no local passwords) and use federated login only. This options works only when custom login form is enabled.';
+$lang['useajax']         = 'Use AJAX calls (this works only for browsers that support JavaScript)';

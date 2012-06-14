@@ -20,6 +20,7 @@ if (!defined('FEDAUTH_PLUGIN')) define ('FEDAUTH_PLUGIN', DOKU_PLUGIN . 'fedauth
 if (!defined('DEFIMG_INC')) define('DEFIMG_INC', FEDAUTH_PLUGIN . 'images/');*/
 
 require_once(DOKU_PLUGIN . 'admin.php');
+require_once(FEDAUTH_PLUGIN . 'common.php');
 require_once(FEDAUTH_PLUGIN . "classes/fa_manage.adm.class.php");
 
 class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
@@ -30,7 +31,7 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
 
     var $providers = null;
 
-    var $functions = array('movedn','moveup','remove','uselarge','usesmall'); // require a provider id
+    var $functions = array('details','movedn','moveup','remove','uselarge','usesmall'); // require a provider id
     var $commands = array('manage','add','enable'); // don't require a provider id
 
     var $msg = '';
@@ -81,7 +82,7 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
         // verify $_REQUEST vars
         if (in_array($this->cmd, $this->commands)) {
             $this->provid = '';
-        } else if (!in_array($this->cmd, $this->functions) || !in_array($this->provid, $this->providers)) {
+        } else if (!in_array($this->cmd, $this->functions) || !$this->providers->get($this->provid)) {
             $this->cmd = 'manage';
             $this->provid = '';
         }
@@ -93,13 +94,34 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
 
         // create object to handle the command
         $class = "fa_" . $this->cmd;
-        @require_once(FEDAUTH_PLUGIN . "classes/$class.adm.class.php");
+
+        // Note: for some PHP configurations @require_once still may end up dying, thus file_exits
+        $hfile = FEDAUTH_PLUGIN . "classes/$class.adm.class.php";
+        if (file_exists($hfile)) {
+            require_once($hfile);
+        }
         if (!class_exists($class)) {
             $class = 'fa_manage';
         }
 
-        $this->handler = new $class($this, $this->plugin);
+        $this->handler = new $class($this, $this->provid);
         $this->msg = $this->handler->process();
+    }
+
+    /**
+     * Outputs data for AJAX call.
+     */
+    function ajax() {
+        if (!$this->getConf('useajax')) return;
+
+        // enable direct access to language strings
+        $this->setupLocale();
+
+        if ($this->handler === NULL) $this->handler = new fa_manage($this, $this->provid);
+
+        if (!$this->handler->ajax()) {
+            print "Unrecognized ajax call: " . $this->cmd;
+        }
     }
 
     /**
@@ -112,6 +134,9 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
         if ($this->handler === NULL) $this->handler = new fa_manage($this, $this->provid);
 
         ptln('<div id="fedauth__manager">');
+        if ($this->getConf('useajax')) {
+            print plugin_script_block('admin');
+        }
         $this->handler->html();
         ptln('</div><!-- #fedauth__manager -->');
     }

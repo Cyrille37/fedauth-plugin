@@ -10,3 +10,4 @@
 $meta['adminsonly']      = array('onoff');
 $meta['customloginform'] = array('onoff');
 $meta['fedauthonly']     = array('onoff');
+$meta['useajax']         = array('onoff');

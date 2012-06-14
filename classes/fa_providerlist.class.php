@@ -192,6 +192,19 @@ class fa_providerlist {
     }
 
     /**
+     * Returns the XHTML of provider image choosing automatically
+     * whether it should be small or large.
+     *
+     * @param string $id provider identifier
+     * @param string $class (optional) a CSS class to use
+     * @return string rendered image XHTML
+     */
+    public function getImageXHTML($id, $class='') {
+        $size = in_array($id, $this->order_large) ? PROV_LARGE : PROV_SMALL;
+        return $this->providers[$id]->getImageXHTML($size, $class);
+    }
+
+    /**
      * Indicates whether a provider is first on its order list.
      *
      * @param string $id provider identifier

@@ -52,6 +52,25 @@ class fa_manage {
     }
 
     /**
+     * Outputs data for ajax call.
+     */
+    function ajax() {
+        $method = 'handle_ajax_' . $this->manager->cmd;
+        if (method_exists($this, $method)) {
+            $this->$method();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles AJAX call to display provider details.
+     */
+    function handle_ajax_details() {
+        print $this->_html_details($this->provid);
+    }
+
+    /**
      * Outputs the XHTML of the management page.
      */
     function html() {
@@ -68,10 +87,10 @@ class fa_manage {
     function html_large_providers_form() {
         global $ID;
 
-        $out = '<div class="lprovs"><form action="'.wl($ID).'" method="post">'
+        $out = '<div id="fa__large" class="lprovs"><form action="'.wl($ID).'" method="post">'
              . '  <fieldset class="hidden">'
-             . '    <input type="hidden" name="do"     value="admin" />'
-             . '    <input type="hidden" name="page"   value="fedauth" />'
+             . '    <input type="hidden" name="do" value="admin" />'
+             . '    <input type="hidden" name="page" value="fedauth" />'
              . formSecurityToken(false)
              . '  </fieldset>'
              . $this->_html_providers_list($this->manager->providers->getLarge(), true)
@@ -88,10 +107,10 @@ class fa_manage {
     function html_small_providers_form() {
         global $ID;
 
-        $out = '<div class="sprovs"><form action="'.wl($ID).'" method="post">'
+        $out = '<div id="fa_small" class="sprovs"><form action="'.wl($ID).'" method="post">'
              . '  <fieldset class="hidden">'
-             . '    <input type="hidden" name="do"     value="admin" />'
-             . '    <input type="hidden" name="page"   value="fedauth" />'
+             . '    <input type="hidden" name="do" value="admin" />'
+             . '    <input type="hidden" name="page" value="fedauth" />'
              . formSecurityToken(false)
              . '  </fieldset>'
              . $this->_html_providers_list($this->manager->providers->getSmall())
@@ -127,11 +146,15 @@ class fa_manage {
             $checked = $pro->isEnabled() ? ' checked="checked"' : '';
             $check_disabled = ($protected) ? ' disabled="disabled"' : '';
 
+            // this might need ajax disable check
+            $details = ($this->manager->cmd == 'details' && $this->provid == $id) ? $this->_html_details($id, true) : '';
+
             $out .= '    <fieldset'.$class.'>'
                  .  '      <legend>'.$id.'</legend>'
                  .  '      <input type="checkbox" class="enable" name="enabled[]" id="dw__p_'.$id.'" value="'.$id.'"'.$checked.$check_disabled.' />'
-                 .  '      <div class="legend"><label for="dw__p_'.$id.'">'.$pro->getImageXHTML().$pro->getName().'</label>'/*.' <span class="provid">(ID: '.$id.')</span>'*/
-                 .  '      <div id="fa__det_'.$id.'"></div></div>'
+                 .  '      <div class="legend"><label for="dw__p_'.$id.'">'.$pro->getImageXHTML().$pro->getName().'</label>'
+                 .  '      <div id="fa__det_'.$id.'">'.$details.'</div></div>'
+                 .  $this->_html_button($id, 'details', false, 6)
                  .  $this->_html_button($id, 'mvup', $this->manager->providers->isFirst($id), 6)
                  .  $this->_html_button($id, 'mvdn', $this->manager->providers->isLast($id), 6)
                  .  $this->_html_button($id, $large ? 'mksmall' : 'mklarge', false, 6)
@@ -146,6 +169,13 @@ class fa_manage {
         $disabled = ($disabled) ? 'disabled="disabled"' : '';
         return str_repeat(' ', $indent)
             . '<input type="submit" class="button '.$class.'" '.$disabled.' name="fa['.$btn.']['.$provid.']" title="'.$this->lang['btn_'.$btn].'" value="'.$this->lang['btn_'.$btn].'" />';
+    }
+
+    function _html_details($provid, $forcevisible=false) {
+        $fv = $forcevisible ? ' style="display: block;"' : '';
+        $pro =& $this->manager->providers->get($provid);
+        return '<div class="details"'.$fv.'><b>ID:</b> '.$provid.'<br/><b>Service URL:</b> '.$pro->getURL().'<br/>'
+               .$pro->getImageXHTML(PROV_LARGE,'imgdetails').' 80x40 '.$pro->getImageXHTML(PROV_SMALL,'imgdetails').' 16x16</div>';
     }
 
 } /* fa_manage */

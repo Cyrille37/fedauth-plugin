@@ -10,3 +10,4 @@
 $lang['adminsonly']      = 'Tylko administratorzy mogą konfigurować dostawców logowania';
 $lang['customloginform'] = 'Uzyj wlasnego formularza logowania zamiast dodawania logowania federacyjnego na dole oryginalnego formularza logowania';
 $lang['fedauthonly']     = 'Wyłącz lokalną autoryzację użytkowników (bez loklaknych haseł) i używaj tylko logowania federacyjnego. Ta opcja działa tylko przy włączonym własnym formularzu logowania.';
+$lang['useajax']         = 'Używaj wywołań AJAX (ta opcja działa tylko w przypadku przeglądarek z włączoną obsługą JavaScript)';

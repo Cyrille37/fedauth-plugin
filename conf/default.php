@@ -10,3 +10,4 @@
 $conf['adminsonly']      = 1; // restrict the authorization providers configuration to admins only
 $conf['customloginform'] = 0; // use the customized login form instead of adding federated login to bottom of the original login form
 $conf['fedauthonly']     = 0; // disable local authorization and use federated login only (no local passwords)
+$conf['useajax']         = 1; // use AJAX calls (this works only for browsers that support JavaScript)

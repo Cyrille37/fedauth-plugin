@@ -21,5 +21,4 @@ $lang['btn_mvdn']        = 'Na dół';
 $lang['btn_mklarge']     = 'Do dużych';
 $lang['btn_mksmall']     = 'Do małych';
 $lang['btn_remove']      = 'Usuń';
-$lang['btn_detshow']     = 'Pokaż szczegóły';
-$lang['btn_dethide']     = 'Ukryj szczegóły';
+$lang['btn_details']     = 'Szczegóły';

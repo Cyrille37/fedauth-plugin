@@ -21,5 +21,4 @@ $lang['btn_mvdn']        = 'Move Down';
 $lang['btn_mklarge']     = 'To Large';
 $lang['btn_mksmall']     = 'To Small';
 $lang['btn_remove']      = 'Delete';
-$lang['btn_detshow']     = 'Show Details';
-$lang['btn_dethide']     = 'Hide Details';
+$lang['btn_details']     = 'Details';
