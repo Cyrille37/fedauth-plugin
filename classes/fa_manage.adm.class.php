@@ -195,7 +195,7 @@ class fa_manage {
             $out .= '    <fieldset'.$class.'>'
                  .  '      <legend>'.$id.'</legend>'
                  .  '      <input type="checkbox" class="enable" name="toggle[]" id="dw__p_'.$id.'" value="'.$id.'"'.$checked.$check_disabled.' />'
-                 .  '      <div class="legend"><label for="dw__p_'.$id.'">'.$pro->getImageXHTML().$pro->getName().'</label>'
+                 .  '      <div class="legend"><label for="dw__p_'.$id.'">'.$pro->getImageXHTML().$pro->getName().'</label>'.(!$pro->isEnabled()?'<span class="disabled">('.$this->lang['disabled'].')</span>':'')
                  .  '      <div id="fa__det_'.$id.'">'.$details.'</div></div>'
                  .  $this->_html_button($id, 'details', false, 6)
                  .  $this->_html_button($id, 'moveup', $this->manager->providers->isFirst($id), 6)
@@ -217,7 +217,7 @@ class fa_manage {
     function _html_details($provid, $forcevisible=false) {
         $fv = $forcevisible ? ' style="display: block;"' : '';
         $pro =& $this->manager->providers->get($provid);
-        return '<div class="details"'.$fv.'><b>ID:</b> '.$provid.'<br/><b>Service URL:</b> '.$pro->getURL().'<br/>'
+        return '<div class="details"'.$fv.'><b>ID:</b> '.$provid.'<br/><b>'.$this->lang['serviceurl'].':</b> '.$pro->getURL().'<br/>'
                .$pro->getImageXHTML(PROV_LARGE,'imgdetails').' 80x40 '.$pro->getImageXHTML(PROV_SMALL,'imgdetails').' 16x16</div>';
     }
 
