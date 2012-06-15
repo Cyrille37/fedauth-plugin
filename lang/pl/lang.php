@@ -16,9 +16,9 @@ $lang['direction']  = 'ltr';
 $lang['menu']            = 'Ustawienia logowania federacyjnego';
 
 $lang['btn_toggle']      = 'Zmień';
-$lang['btn_mvup']        = 'Do góry';
-$lang['btn_mvdn']        = 'Na dół';
-$lang['btn_mklarge']     = 'Do dużych';
-$lang['btn_mksmall']     = 'Do małych';
+$lang['btn_moveup']        = 'Do góry';
+$lang['btn_movedn']        = 'Na dół';
+$lang['btn_uselarge']     = 'Do dużych';
+$lang['btn_usesmall']     = 'Do małych';
 $lang['btn_remove']      = 'Usuń';
 $lang['btn_details']     = 'Szczegóły';

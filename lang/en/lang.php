@@ -16,9 +16,9 @@ $lang['direction']  = 'ltr';
 $lang['menu']            = 'Manage Federated Login Providers';
 
 $lang['btn_toggle']      = 'Toggle';
-$lang['btn_mvup']        = 'Move Up';
-$lang['btn_mvdn']        = 'Move Down';
-$lang['btn_mklarge']     = 'To Large';
-$lang['btn_mksmall']     = 'To Small';
+$lang['btn_moveup']        = 'Move Up';
+$lang['btn_movedn']        = 'Move Down';
+$lang['btn_uselarge']     = 'To Large';
+$lang['btn_usesmall']     = 'To Small';
 $lang['btn_remove']      = 'Delete';
 $lang['btn_details']     = 'Details';

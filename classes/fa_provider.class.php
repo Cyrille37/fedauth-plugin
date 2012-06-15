@@ -57,8 +57,20 @@ class fa_provider {
         $this->data['disabled'] = 1;
     }
 
-    public function toggle() {
-        $this->data['disabled'] = $this->isEnabled() ? 1 : 0;
+    /**
+     * Toggles enabled state of the provider.
+     *
+     * @param mixed $onoff true - enable, false - disable, null - automatic change
+     * @return bool true, if the state has been changed
+     */
+    public function toggle($onoff=null) {
+        if (is_null($onoff)) {
+            $this->data['disabled'] = $this->isEnabled() ? 1 : 0;
+            return true;
+        }
+        $old = $this->data['disabled'];
+        $this->data['disabled'] = $onoff ? 0 : 1;
+        return ($old != $this->data['disabled']);
     }
 
     public function isEnabled() {

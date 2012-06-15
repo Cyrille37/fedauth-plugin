@@ -31,6 +31,11 @@ class fa_manage {
     var $provid = '';
 
     /**
+     * Source form/ajax call identifier used with provider lists.
+     */
+    var $listSource = null;
+
+    /**
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
@@ -43,7 +48,53 @@ class fa_manage {
     }
 
     /**
-     * Performs the action depending on current command (and function).
+     * Verifies whether the request contains valid list type.
+     * Used by derived classes to ensure that the request is
+     * related to any of the provider lists.
+     *
+     * @return bool true, if list type is valid
+     */
+    function isValidListSource() {
+        if (is_null($this->listSource)) {
+             $source = strtolower($_REQUEST['source']);
+             $this->listSource = (($source == 'large') || ($source == 'small')) ? $source : null;
+        }
+        return !is_null($this->listSource);
+    }
+
+    /**
+     * Returns a reference to an associative array cotaining the providers
+     * selected by current list source. Use isValidListSource() method first,
+     * to ensure that calling this method won't fail.
+     *
+     * @return arrayref reference to a providers array
+     */
+    function &getProvidersByListSource() {
+        return $this->manager->providers->{'get'.ucfirst($this->listSource)}();
+    }
+
+    /**
+     * Saves the authorization providers cofiguration file.
+     */
+    function saveConfig() {
+        $this->manager->providers->save($_SERVER['REMOTE_USER']);
+
+        // NOTE: Expiring the dokuwiki caches seem to be necessary,
+        //       because Opera and IE9 seem not to refresh the management page
+        //       on reload for changes made using different browser/session.
+        //       Guess what, Firefox and Chrome don't need this!
+
+        // TODO: Find a less intrusive solution.
+
+        global $config_cascade;
+
+        // touching local.php expires wiki page, JS and CSS caches
+        @touch(reset($config_cascade['main']['local']));
+    }
+
+    /**
+     * When overrided in a derived class, performs an action
+     * depending on current command (and function).
      *
      * @return string the processing result message
      */
@@ -52,22 +103,26 @@ class fa_manage {
     }
 
     /**
-     * Outputs data for ajax call.
+     * Outputs data for AJAX call.
+     *
+     * @return bool true on success
      */
     function ajax() {
         $method = 'handle_ajax_' . $this->manager->cmd;
         if (method_exists($this, $method)) {
-            $this->$method();
-            return true;
+            return $this->$method();
         }
         return false;
     }
 
     /**
      * Handles AJAX call to display provider details.
+     *
+     * @return bool true on success
      */
     function handle_ajax_details() {
         print $this->_html_details($this->provid);
+        return true;
     }
 
     /**
@@ -75,47 +130,35 @@ class fa_manage {
      */
     function html() {
         $out = $this->manager->plugin_locale_xhtml('admproviders');
-        $out = str_replace('@LARGELIST@', $this->html_large_providers_form(), $out);
-        $out = str_replace('@SMALLLIST@', $this->html_small_providers_form(), $out);
+        $out = str_replace('@LARGELIST@', $this->html_providers_form(true), $out);
+        $out = str_replace('@SMALLLIST@', $this->html_providers_form(), $out);
         $out = str_replace('@ADDPROVIDER@', $this->html_add_provider_form(), $out);
         print $out;
     }
 
     /**
-     * Renders the form with large provider buttons table and action buttons.
+     * Renders the form with provider buttons table and action buttons.
+     *
+     * @param bool $large true for providers configured to use large buttons or else small
+     * @return string rendered provider list form
      */
-    function html_large_providers_form() {
+    function html_providers_form($large=false) {
         global $ID;
 
-        $out = '<div id="fa__large" class="lprovs"><form action="'.wl($ID).'" method="post">'
+        $listtype = $large ? 'large' : 'small';
+
+        $out = '<div id="fa__' . $listtype . '" class="sprovs"><form action="'.wl($ID).'" method="post">'
              . '  <fieldset class="hidden">'
              . '    <input type="hidden" name="do" value="admin" />'
              . '    <input type="hidden" name="page" value="fedauth" />'
+             . '    <input type="hidden" name="source" value="' . $listtype . '" />'
              . formSecurityToken(false)
              . '  </fieldset>'
-             . $this->_html_providers_list($this->manager->providers->getLarge(), true)
+             . '  <div class="axwrap_' . $listtype . '">'
+             . $this->html_providers_list($this->manager->providers->{'get'.ucfirst($listtype)}(), $large)
+             . '  </div>'
              . '  <fieldset class="buttons">'
-             . '    <input type="submit" class="button" name="fa[enable]" value="' . $this->lang['btn_toggle'] . '" />'
-             . '  </fieldset>'
-             . '</form></div>';
-        return $out;
-    }
-
-    /**
-     * Renders the form with small provider buttons table and action buttons.
-     */
-    function html_small_providers_form() {
-        global $ID;
-
-        $out = '<div id="fa_small" class="sprovs"><form action="'.wl($ID).'" method="post">'
-             . '  <fieldset class="hidden">'
-             . '    <input type="hidden" name="do" value="admin" />'
-             . '    <input type="hidden" name="page" value="fedauth" />'
-             . formSecurityToken(false)
-             . '  </fieldset>'
-             . $this->_html_providers_list($this->manager->providers->getSmall())
-             . '  <fieldset class="buttons">'
-             . '    <input type="submit" class="button" name="fa[enable]" value="' . $this->lang['btn_toggle'] . '" />'
+             . '    <input type="submit" class="button" name="fa[toggle]" value="' . $this->lang['btn_toggle'] . '" />'
              . '  </fieldset>'
              . '</form></div>';
         return $out;
@@ -128,7 +171,7 @@ class fa_manage {
         return '<b>WARNING:</b> This version does not support adding custom providers.';
     }
 
-    function _html_providers_list(&$source, $large=false) {
+    function html_providers_list(&$source, $large=false) {
         if (!is_array($source)) return '';
 
         $out = '';
@@ -151,13 +194,13 @@ class fa_manage {
 
             $out .= '    <fieldset'.$class.'>'
                  .  '      <legend>'.$id.'</legend>'
-                 .  '      <input type="checkbox" class="enable" name="enabled[]" id="dw__p_'.$id.'" value="'.$id.'"'.$checked.$check_disabled.' />'
+                 .  '      <input type="checkbox" class="enable" name="toggle[]" id="dw__p_'.$id.'" value="'.$id.'"'.$checked.$check_disabled.' />'
                  .  '      <div class="legend"><label for="dw__p_'.$id.'">'.$pro->getImageXHTML().$pro->getName().'</label>'
                  .  '      <div id="fa__det_'.$id.'">'.$details.'</div></div>'
                  .  $this->_html_button($id, 'details', false, 6)
-                 .  $this->_html_button($id, 'mvup', $this->manager->providers->isFirst($id), 6)
-                 .  $this->_html_button($id, 'mvdn', $this->manager->providers->isLast($id), 6)
-                 .  $this->_html_button($id, $large ? 'mksmall' : 'mklarge', false, 6)
+                 .  $this->_html_button($id, 'moveup', $this->manager->providers->isFirst($id), 6)
+                 .  $this->_html_button($id, 'movedn', $this->manager->providers->isLast($id), 6)
+                 .  $this->_html_button($id, $large ? 'usesmall' : 'uselarge', false, 6)
                  .  $this->_html_button($id, 'remove', !$pro->isRemovable(), 6)
                  .  '    </fieldset>';
             //$out .= "<h2>$id</h2><pre>" . print_r($pro, true) . "</pre>";
