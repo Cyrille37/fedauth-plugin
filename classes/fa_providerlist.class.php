@@ -232,29 +232,6 @@ class fa_providerlist {
         return $last == $id;
     }
 
-
-// NOTE: consider removing
-    public function makeLarge() {
-        if (in_array($id, $this->order_small)) {
-            $index = array_search($id, $this->order_small);
-            array_splice($this->order_small, $index, 1);
-            array_push($this->order_large, $id);
-            return PROV_LARGE;
-        }
-        return false;
-    }
-
-// NOTE: consider removing
-    public function makeSmall() {
-        if (in_array($id, $this->order_large)) {
-            $index = array_search($id, $this->order_large);
-            array_splice($this->order_large, $index, 1);
-            array_push($this->order_small, $id);
-            return PROV_SMALL;
-        }
-        return false;
-    }
-
     /**
      * Moves a provider one step up in its order array.
      *
@@ -357,7 +334,7 @@ class fa_providerlist {
      * Toggles the size of a provider button (moves a provider id between order arrays).
      *
      * @param string $id provider identifier
-     * @return int|bool provider button size code or false on failure
+     * @return mixed provider button size code or false on failure
      */
     public function toggleSize($id) {
         if (in_array($id, $this->order_large)) {
