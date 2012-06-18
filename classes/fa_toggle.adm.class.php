@@ -54,7 +54,7 @@ class fa_toggle extends fa_manage {
     function handle_ajax_toggle() {
         if (!$this->isValidListSource()) return false;
 
-        print $this->html_providers_list($this->manager->getProvidersByListSource(), $this->listSource == 'large');
+        print $this->html_providers_list($this->getProvidersByListSource(), $this->listSource == 'large');
         return true;
     }
 

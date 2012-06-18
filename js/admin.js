@@ -15,24 +15,29 @@ var fa_manager = {
         if (jQuery('#fedauth__manager').length === 0) {
             return;
         }
-
-        jQuery('#fedauth__manager input[name^="fa[details]"]').each(function() {
+        /* Bind action for each details button click */
+        jQuery('#fedauth__manager input[name^="fa[details]"]').prop('type','button').click(function() {
             var pid = jQuery(this).attr('name')
             pid = pid.substring(pid.lastIndexOf('[')+1, pid.lastIndexOf(']'));
-            jQuery(this).prop('type','button').click(function() {
-                if (jQuery(this).attr('collapse') == 'yes') {
-                    jQuery(this).removeAttr('collapse');
-                    jQuery('#fa__det_'+pid+' .details').toggle();
-                    return false;
-                }
-                fa_manager.loadinfo(this, pid);
+            if (jQuery(this).attr('collapse') == 'yes') {
+                jQuery(this).removeAttr('collapse');
+                jQuery('#fa__det_'+pid+' .details').toggle();
                 return false;
-            });
+            }
+            fa_manager.loadinfo(this, pid);
+            return false;
+        });
+        /* Bind action for each toggle button click */
+        jQuery('#fedauth__manager input[name="fa[toggle]"]').prop('type','button').click(function() {
+             var did = jQuery(this).closest('div[id^="fa__"]').attr('id');
+             did = did.substring(did.lastIndexOf('_')+1);
+             fa_manager.toggleproviders(this, did);
+             return false;
         });
     },
 
     /**
-     * Loads the current authorization service info
+     * Loads the current authorization service info.
      */
     loadinfo: function (sender, target) {
         jQuery('#fa__det_'+target)
@@ -44,6 +49,25 @@ var fa_manager = {
                     jQuery(sender).attr('collapse', 'yes');
                     jQuery('#fa__det_'+target+' .details').toggle(); 
                 }
+            );
+        return false;
+    },
+
+    /**
+     * Toggles the enabled state of providers from the target list.
+     */
+    toggleproviders: function (sender, target) {
+        var data = decodeURIComponent(jQuery('#fa__'+target+' form').serialize())+'&ajax=toggle&fa[toggle]';
+        jQuery('#axwrap__'+target)
+            .html('<img src="'+DOKU_BASE+'lib/images/throbber.gif" alt="..." style="margin: 10px;"/>')
+            .load(
+                FEDAUTH_BASE + 'ajax.php',
+                data,
+                function() {
+/*                    jQuery(sender).attr('collapse', 'yes');
+                    jQuery('#fa__det_'+target+' .details').toggle();*/
+                }
+
             );
         return false;
     }

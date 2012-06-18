@@ -154,7 +154,7 @@ class fa_manage {
              . '    <input type="hidden" name="source" value="' . $listtype . '" />'
              . formSecurityToken(false)
              . '  </fieldset>'
-             . '  <div class="axwrap_' . $listtype . '">'
+             . '  <div id="axwrap__' . $listtype . '">'
              . $this->html_providers_list($this->manager->providers->{'get'.ucfirst($listtype)}(), $large)
              . '  </div>'
              . '  <fieldset class="buttons">'

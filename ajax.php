@@ -18,9 +18,10 @@ if(!count($_POST) && !empty($HTTP_RAW_POST_DATA)){
 
 if(!defined('DOKU_INC_LOC')) define('DOKU_INC_LOC',dirname(__FILE__).'/../../../');
 require_once(DOKU_INC_LOC.'inc/init.php');
-//close session
+// close session
 session_write_close();
 
+// TODO: incorporate manager permissions according to plugin settings
 if(!auth_isadmin()) die('for admins only');
 if(!checkSecurityToken()) die('CRSF Attack');
 
