@@ -30,14 +30,29 @@ class fa_usesmall extends fa_manage {
      *
      * @return string the processing result message
      */
-    function process() {
+    function process_usesmall() {
         if ($this->manager->providers->toggleSize($this->provid)) {
             $this->saveConfig();
+            $this->success = true;
             return 'Your changes have been saved.';
         }
         return '';
     }
 
+    /**
+     * Handles AJAX call to return the result in JSON format.
+     *
+     * @return bool true on success
+     */
+    function handle_ajax_usesmall() {
+        if ($this->success) {
+            // now, when in small providers list, output the move to large button info
+            print $this->_json_buttoninfo('uselarge');
+            return true;
+        }
+        print '{"success":0}';
+        return false;
+    }
 
 } /* fa_usesmall */
 

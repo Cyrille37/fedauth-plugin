@@ -30,14 +30,24 @@ class fa_moveup extends fa_manage {
      *
      * @return string the processing result message
      */
-    function process() {
+    function process_moveup() {
         if ($this->manager->providers->moveUp($this->provid)) {
             $this->saveConfig();
+            $this->success = true;
             return 'Your changes have been saved.';
         }
         return '';
     }
 
+    /**
+     * Handles AJAX call to return the result in JSON format.
+     *
+     * @return bool true on success
+     */
+    function handle_ajax_moveup() {
+        print '{"success":' . (int)$this->success . '}';
+        return true;
+    }
 
 } /* fa_moveup */
 

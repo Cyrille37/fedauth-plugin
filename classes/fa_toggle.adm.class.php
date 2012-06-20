@@ -30,7 +30,7 @@ class fa_toggle extends fa_manage {
      *
      * @return string the processing result message
      */
-    function process() {
+    function process_toggle() {
         if (!$this->isValidListSource()) return '';
 
         $enable = is_array($_REQUEST['toggle']) ? $_REQUEST['toggle'] : array();
@@ -39,6 +39,7 @@ class fa_toggle extends fa_manage {
                 $save = true;
             }
         }
+        $this->success = true; // always success, even with no changes
         if ($save) {
             $this->saveConfig();
             return 'Your changes have been saved.';

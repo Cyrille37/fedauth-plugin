@@ -22,6 +22,7 @@ $lang['btn_uselarge']    = 'To Large';
 $lang['btn_usesmall']    = 'To Small';
 $lang['btn_remove']      = 'Delete';
 $lang['btn_details']     = 'Details';
+$lang['btn_restore']     = 'Restore Defaults';
 
 $lang['disabled']        = 'disabled';
 $lang['serviceurl']      = 'Service URL';

@@ -30,14 +30,24 @@ class fa_movedn extends fa_manage {
      *
      * @return string the processing result message
      */
-    function process() {
+    function process_movedn() {
         if ($this->manager->providers->moveDown($this->provid)) {
             $this->saveConfig();
+            $this->success = true;
             return 'Your changes have been saved.';
         }
         return '';
     }
 
+    /**
+     * Handles AJAX call to return the result in JSON format.
+     *
+     * @return bool true on success
+     */
+    function handle_ajax_movedn() {
+        print '{"success":' . (int)$this->success . '}';
+        return true;
+    }
 
 } /* fa_movedn */
 

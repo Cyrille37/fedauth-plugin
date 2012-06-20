@@ -36,6 +36,11 @@ class fa_manage {
     var $listSource = null;
 
     /**
+     * Process result.
+     */
+    var $success = false;
+
+    /**
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
@@ -93,12 +98,16 @@ class fa_manage {
     }
 
     /**
-     * When overrided in a derived class, performs an action
-     * depending on current command (and function).
+     * Performs an action depending on current command (and function).
      *
      * @return string the processing result message
      */
     function process() {
+        $method = 'process_' . $this->manager->cmd;
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        }
+        $this->success = true;
         return '';
     }
 
@@ -133,6 +142,7 @@ class fa_manage {
         $out = str_replace('@LARGELIST@', $this->html_providers_form(true), $out);
         $out = str_replace('@SMALLLIST@', $this->html_providers_form(), $out);
         $out = str_replace('@ADDPROVIDER@', $this->html_add_provider_form(), $out);
+        $out = str_replace('@RESTOREDEFAULTS@', $this->html_restore_defaults_form(), $out);
         print $out;
     }
 
@@ -169,6 +179,26 @@ class fa_manage {
      */
     function html_add_provider_form() {
         return '<b>WARNING:</b> This version does not support adding custom providers.';
+    }
+
+    /**
+     * Renders the form for restoring the default settings.
+     */
+    function html_restore_defaults_form() {
+        global $ID;
+
+        $out = '<div id="fa__restore"><form action="'.wl($ID).'" method="post">'
+             . '  <fieldset class="hidden">'
+             . '    <input type="hidden" name="do" value="admin" />'
+             . '    <input type="hidden" name="page" value="fedauth" />'
+             . '    <input type="hidden" name="source" value="restore" />'
+             . formSecurityToken(false)
+             . '  </fieldset>'
+             . '  <fieldset class="buttons">'
+             . '    <input type="submit" class="button" name="fa[restore]" value="' . $this->lang['btn_restore'] . '" />'
+             . '  </fieldset>'
+             . '</form></div>';
+        return $out;
     }
 
     function html_providers_list(&$source, $large=false) {
@@ -219,6 +249,11 @@ class fa_manage {
         $pro =& $this->manager->providers->get($provid);
         return '<div class="details"'.$fv.'><b>ID:</b> '.$provid.'<br/><b>'.$this->lang['serviceurl'].':</b> '.$pro->getURL().'<br/>'
                .$pro->getImageXHTML(PROV_LARGE,'imgdetails').' 80x40 '.$pro->getImageXHTML(PROV_SMALL,'imgdetails').' 16x16</div>';
+    }
+
+    function _json_buttoninfo($cmd) {
+        return sprintf('{"success":1,"name":"fa[%s][%s]","title":"%s","value":"%s"}',
+            $cmd, $this->provid, $this->lang['btn_'.$cmd], $this->lang['btn_'.$cmd]);
     }
 
 } /* fa_manage */

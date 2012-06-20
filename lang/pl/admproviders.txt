@@ -21,3 +21,11 @@ Obrazki (małe i duże logo) dostawcy powinny być uprzednio załadowane do tej 
 np. ''%%http://mojdostawca.pl/{username}%%''
 
 @ADDPROVIDER@
+
+===== Przywróć domyślne ustawienia =====
+
+Przywracając ustawienia domyślne, usuwasz wszystkie pliki konfiguracyjne. Wszystkie dodanie ręcznie usługi autoryzacji zostaną usnięte, a wszystkie domyślne przywrócone.
+
+:!: **UWAGA:** //Ta akcja nie może być cofnięta.//
+
+@RESTOREDEFAULTS@

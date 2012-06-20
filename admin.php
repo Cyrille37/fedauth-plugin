@@ -32,7 +32,7 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
     var $providers = null;
 
     var $functions = array('details','movedn','moveup','remove','uselarge','usesmall'); // require a provider id
-    var $commands = array('manage','add','toggle'); // don't require a provider id
+    var $commands = array('add','manage','restore','toggle'); // don't require a provider id
 
     var $msg = '';
     var $err = '';

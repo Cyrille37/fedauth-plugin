@@ -20,3 +20,11 @@ The images should be previously uploaded using Media Manager.
 eg. ''%%http://myprovider.com/{username}%%''
 
 @ADDPROVIDER@
+
+===== Restore Defaults =====
+
+When restoring defaults, your local configuration files are deleted. All of your custom providers are deleted permanently and all default providers are restored.
+
+:!: **WARNING:** //This action cannot be reverted.//
+
+@RESTOREDEFAULTS@
