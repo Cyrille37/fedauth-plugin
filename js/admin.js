@@ -47,11 +47,14 @@ var fa_manager = {
      * @param string id (optional) associated identifier
      */
     bindaction: function (actname, handler, id) {
-        jQuery('#fedauth__manager input[name^="fa['+actname+']"]').prop('type','button').click(function() {
-            var handle = typeof id == 'undefined' ? fa_manager._stripprovid(this) : id;
-            handler(this, handle);
-            return false;
-        });
+        jQuery('#fedauth__manager input[name^="fa['+actname+']"]')
+            .prop('type','button')
+            .unbind('click')
+            .click(function() {
+                var handle = typeof id == 'undefined' ? fa_manager._stripprovid(this) : id;
+                handler(this, handle);
+                return false;
+            });
     },
 
     /**
@@ -81,7 +84,7 @@ var fa_manager = {
             .load(
                 FEDAUTH_BASE + 'ajax.php',
                 data,
-                function() { }
+                fa_manager.init
             );
         return false;
     },
