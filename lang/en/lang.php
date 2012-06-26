@@ -23,6 +23,23 @@ $lang['btn_usesmall']    = 'To Small';
 $lang['btn_remove']      = 'Delete';
 $lang['btn_details']     = 'Details';
 $lang['btn_restore']     = 'Restore Defaults';
+$lang['btn_login']       = 'Log In';
+$lang['btn_signin']      = 'Sign In';
 
 $lang['disabled']        = 'disabled';
 $lang['serviceurl']      = 'Service URL';
+
+$lang['dologin']         = 'Log In';
+$lang['addlogin']        = 'Add Login';
+$lang['mylogins']        = 'Associated Logins';
+$lang['gotlogin']        = 'Do you already have an account on one of these sites?';
+$lang['clicktoadd']      = 'Click the logo to <b>add another login</b> to your account:';
+$lang['clicktologin']    = 'Click the logo to <b>log in</b> with it here:';
+$lang['manualopenid']    = 'Or, you can manually enter your OpenID';
+$lang['morelogin']       = 'show more options...';
+$lang['enterlogin']      = 'Enter your @PROVID@ login name:';
+$lang['unknowncmd']      = 'Uknown Federated Login command:';
+$lang['signinnamereq']   = 'To use the @PROVID@ authorization service you have to provide a login name.';
+$lang['oidurlreq']       = 'Valid URL is required to use the OpenID authorization service.';
+$lang['authfailed']      = 'Authorization failed.';
+$lang['identitymissing'] = 'Authorization successful, however your identity information is missing.';
