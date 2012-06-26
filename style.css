@@ -134,3 +134,70 @@
     margin: 0px 5px 0px 15px;
     float: left;
 }
+
+#fa__authform {
+    text-align: left;
+}
+
+#fa__authform fieldset {
+    border: none;
+    width: auto;
+    padding: 2px 0px;
+    margin: 0px;
+    margin-left: 20px;
+    text-align: left;
+}
+
+#fa__authform .btnplarge,
+#fa__authform .btnpsmall {
+    background: #fff;
+    border: solid 2px #aaa;
+    padding: 3px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px #ccc;
+    margin: 3px 4px;
+    vertical-align: middle;
+}
+
+#fa__authform .btnplarge:hover,
+#fa__authform .btnpsmall:hover {
+    border: solid 2px #888;
+    border-radius: 5px;
+    box-shadow: none;
+    margin: 5px 2px 1px 6px;
+}
+
+#fa__authform #axwrap__openid p,
+#fa__authform #axwrap__enterlogin p {
+    margin: 1em 0 0.5em;
+}
+
+#fa__authform #axwrap__enterlogin fieldset {
+    margin-left: 60px;
+}
+
+#fa__authform .manualoid {
+    margin: auto 5px;
+    vertical-align: middle;
+}
+
+#fa__authform .button {
+    margin: 1px 5px;
+}
+
+#fa__authform .selected {
+    border: solid 3px #00ff21;
+    margin: 2px 3px;
+}
+
+#dw__login {
+    text-align: left;
+}
+
+#dw__login fieldset {
+    margin-bottom: 1em;
+}
+
+#dw__login fieldset, #dw__login p {
+    margin-left: 20px;
+}
