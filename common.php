@@ -36,4 +36,30 @@ function plugin_script_block($name, $nocomments=true) {
     return $out;
 }
 
+/**
+ * Loads a handler class.
+ *
+ * @param object $plugin owner of the handler instance
+ * @param string $cmd command to handle
+ * @param string $type scope suffix beeing a part of class' filename
+ * @param string $provid (optional) an authorization provider id
+ */
+function &load_handler_class($plugin, $cmd, $type, $provid='', $base='base') {
+    $class = "fa_" . $cmd;
+
+    // don't want require_once end up dying, load base class instead
+    $hfile = FEDAUTH_PLUGIN . "classes/$type/$class.$type.class.php";
+    if (file_exists($hfile)) {
+        require_once($hfile);
+    }
+    if (!class_exists($class)) {
+        $class = "fa_" . $base;
+        if (!class_exists($class)) {
+            throw new RuntimeException("Base class $class must be included before load_handler_class() is called.");
+        }
+    }
+
+    return new $class($plugin, $cmd, $provid);
+}
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
