@@ -21,6 +21,15 @@ require_once(DOKU_PLUGIN.'action.php');
 
 class action_plugin_fedauth extends DokuWiki_Action_Plugin {
 
+    var $provid = '';
+    var $cmd = '';
+    var $handler = null;
+
+    var $providers = null;
+
+    var $functions = array('select','signin','signedin','remove'); // require a provider id
+    var $commands = array('add','login','manage'); // don't require a provider id
+
     /**
      * Returns the plugin meta information.
      */
@@ -42,7 +51,7 @@ class action_plugin_fedauth extends DokuWiki_Action_Plugin {
     {
         $controller->register_hook(
             'HTML_LOGINFORM_OUTPUT',
-            'BEFORE',
+            'AFTER',
             $this,
             'handle_login_form',
             array());
@@ -71,8 +80,55 @@ class action_plugin_fedauth extends DokuWiki_Action_Plugin {
      * Handles login action preprocess to output the login form for federated login only.
      */
     function handle_act_preprocess(&$event, $param) {
-        if ($event->data == 'login') {
-            // output custom login form without password textbox
+        if ($event->data != 'login' && $event->data != 'profile' && $event->data != 'fedauth') {
+            return;
+        }
+
+        require_once(FEDAUTH_PLUGIN . 'common.php');
+        require_once(FEDAUTH_PLUGIN . "classes/fa_base.class.php");
+        require_once(FEDAUTH_PLUGIN . "classes/fa_service.class.php");
+        require_once(FEDAUTH_PLUGIN . "classes/usr/fa_login.usr.class.php");
+
+        $user = $_SERVER['REMOTE_USER'];
+
+        // load helper plugin
+        if ($helper =& plugin_load('helper', 'fedauth')) {
+            $this->providers = $helper->getProviders();
+        }
+
+        $fa = $_REQUEST['fa'];
+        if (is_array($fa)) {
+            $this->cmd = key($fa);
+            $this->provid = is_array($fa[$this->cmd]) ? key($fa[$this->cmd]) : null;
+        } else {
+            $this->cmd = $fa;
+            $this->provid = null;
+        }
+
+        // verify $_REQUEST vars
+        if (in_array($this->cmd, $this->commands)) {
+            $this->provid = '';
+        } else if (!in_array($this->cmd, $this->functions) || !$this->providers->get($this->provid)) {
+            $this->cmd = empty($user) ? 'login' : 'manage';
+            $this->provid = '';
+        } else if ($this->cmd == 'select') {
+            $this->cmd = 'login';
+        }
+
+        if ($event->data == 'fedauth') {
+            $event->stopPropagation();
+            $event->preventDefault();
+
+            if (($this->cmd != 'login' || $this->provid != '') && !checkSecurityToken()) {
+                $this->cmd = 'login';
+                $this->provid = '';
+            }
+        }
+
+        $this->handler =& load_handler_class($this, $this->cmd, 'usr', $this->provid, 'login');
+        $result = $this->handler->process();
+        if (is_array($result) && empty($_REQUEST['ajax'])) {
+            msg($result['msg'], $result['code']);
         }
     }
 
@@ -80,18 +136,34 @@ class action_plugin_fedauth extends DokuWiki_Action_Plugin {
      * Handles unknown action preprocess.
      */
     function handle_act_unknown(&$event, $param) {
+        // mandatory check since other plugins' actions trigger this as well
+        if ($event->data != 'fedauth') {
+             return;
+        }
+
+        // enable direct access to language strings
+        $this->setupLocale();
+
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        $this->handler->html();
     }
 
     /**
      * Handles the login form rendering.
      */
     function handle_login_form(&$event, $param) {
+        $this->setupLocale();
+        $this->handler->html();
     }
 
     /**
      * Handles the profile form rendering.
      */
     function handle_profile_form(&$event, $param) {
+        $this->setupLocale();
+        $this->handler->html();
     }
 
 } /* action_plugin_federate */

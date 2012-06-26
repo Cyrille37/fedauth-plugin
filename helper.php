@@ -77,6 +77,42 @@ class helper_plugin_fedauth extends DokuWiki_Plugin {
         return $this->providers;
     }
 
+    function htmlLoginFedAuth($return=false) {
+        global $ID, $conf, $auth;
+
+        // enable direct access to language strings
+        $this->setupLocale();
+
+        $user = $_SERVER['REMOTE_USER'];
+
+        if (empty($user)) {
+            $cmd = 'login';
+        }
+        else {
+            $cmd = 'addlogin';
+        }
+
+        $out = '<div id="fa__authform" class="sprovs"><form action="'.wl($ID).'" method="post">'
+             . '  <fieldset class="hidden">'
+             . '    <input type="hidden" name="do" value="fedauth" />'
+             . formSecurityToken(false)
+             . '  </fieldset>'
+             . '  <div id="axwrap__large">'
+//             . $this->html_providers_list($this->manager->providers->{'get'.ucfirst($listtype)}(), $large)
+             . '  </div>'
+             . '  <fieldset class="buttons">'
+             . '    <input type="submit" class="button" name="fa[toggle]" value="' . $this->lang['btn_toggle'] . '" />'
+             . '  </fieldset>'
+             . '</form></div>';
+
+        if ($return) return $out;
+        echo $out;
+        return true;
+    }
+
+    function htmlLoginFedAuthCompact($return=false) {
+    }
+
 } /* helper_plugin_federate */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
