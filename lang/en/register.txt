@@ -1,0 +1,11 @@
+====== Complete Account Creation ======
+
+You have been successfully authenticated with your **@PROVID@** login. Yet it
+seems that you are new to this site. To complete creating your account fill in
+all the missing information below or verify what has been provided by @PROVID@
+service.
+
+@REGFORM@
+
+If you think you already have an account on this site, and you were just trying
+to associate a new login with your existing account, //you have to be already logged in//.

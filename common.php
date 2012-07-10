@@ -14,6 +14,35 @@
 if (!defined('FEDAUTH_PLUGIN')) die();
 
 /**
+ * Implodes an array with the key and value pair giving
+ * a glue, a separator between pairs and flattens the nested
+ * array using square braces, eg. topkey[nested1][nested2].
+ *
+ * Params b1 and b2 are key wprappers for recursive array scan.
+ * Do not use them, unless you want to wrap top level keys.
+ *
+ * @param array $array the array to implode
+ * @param string $glue glue between key and value
+ * @param string $separator separator between pairs
+ * @return string the imploded array
+ *
+ * @author Aoi Karasu <aoikarasu@gmail.com>
+ * @author Original by lightningspirit <lightningspirit@gmail.com>
+ */
+function array_implode($array, $glue='=', $separator='&', $b1='',$b2='') {
+    if (!is_array($array)) return $array;
+    $string = array();
+    foreach ($array as $key => $val) {
+        if (is_array($val)) {
+            $val = array_implode($val, $glue, $separator.$b1.$key.$b2, '[', ']');
+            $string[] = $b1.$key.$b2.$val;
+        } else
+        $string[] = $b1.$key.$b2.$glue.$val;
+    }
+    return implode($separator, $string);
+}
+
+/**
  * Renders XHTML script block with contents loaded from a plugin-local
  * JavaScript file. The file location is supposed to be 'js/$name.js'.
  * All comments (including the docblock) are removed by default.
@@ -60,6 +89,14 @@ function &load_handler_class($plugin, $cmd, $type, $provid='', $base='base') {
     }
 
     return new $class($plugin, $cmd, $provid);
+}
+
+function request_url() {
+    $s = empty($_SERVER['HTTPS']) ? '' : ($_SERVER['HTTPS'] == 'on') ? 's' : '';
+    $protocol = substr(strtolower($_SERVER['SERVER_PROTOCOL']), 0, strpos(strtolower($_SERVER['SERVER_PROTOCOL']), '/')) . $s;
+    $defp = empty($s) ? '80' : '443';
+    $port = ($_SERVER['SERVER_PORT'] == $defp) ? '' : (':'.$_SERVER['SERVER_PORT']);
+    return $protocol . '://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

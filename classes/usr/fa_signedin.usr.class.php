@@ -26,12 +26,9 @@ class fa_signedin extends fa_login {
     }
 
     function process_signedin() {
-        if ($_REQUEST['openid_mode'] != 'id_res') {
-            // TODO: handle openid_mode == 'cancel'
-            return $this->error('authfailed');
-        }
+        global $ID;
 
-        $svc = $this->getService($pro);
+        $svc =& $this->getService(null); // parameter not required at this time
         $result = $svc->response(wl($ID, 'do=fedauth', true, '&'));
         if ($result == -1) {
             return $this->error('authfailed');
@@ -39,15 +36,66 @@ class fa_signedin extends fa_login {
         else if ($result == -2) {
             return $this->error('identitymissing');
         }
-        $this->success = true;
+
+        $svcdata = (empty($_REQUEST['svcdata'])) ? '' : urldecode(base64_decode($_REQUEST['svcdata']));
+        return $this->_process_claimed_identity($result, $svcdata);
     }
 
-    function html_signedin() {
-//        print "<pre>".print_r($_REQUEST, true)."</pre>";
-        print "Authorization successful. Biding remote credentials to local account is not yet implemented, however.";
-        if (!$this->success) {
-            $this->html_login_service_from();
+    function _process_claimed_identity($claimedId, $svcdata) {
+        $store =& $this->getUserStore();
+        $uname = $store->getUsernameByIdentity($this->provid, $claimedId);
+        $pname = @$this->manager->providers->get($this->provid)->getName();
+
+        if (empty($_SERVER['REMOTE_USER'])) {
+            // not logged in; login or create
+            if ($uname === false) {
+                // claimed id not associated with local account
+                if (actionOK('register')) {
+                    // redirect to create new account
+                    $this->_storeTempAuth($claimedId, $svcdata, $pname);
+                    $_REQUEST['mode'] = 'register';
+                }
+                else {
+                    // inform that registration is disabled
+                    $this->msg($this->error('regdisabled', array('@PROVID@' => $pname)));
+                }
+            }
+            else {
+                // claimed id associated, login the user
+                $this->manager->cookie->set($uname, $this->provid, $svcdata, false /*$sticky*/);
+                $store->refreshUserDataEntry($claimedId);
+            }
         }
+        else {
+            if ($uname !== false) {
+                // claimed id already assigned to user account, return error
+                $this->msg($this->error('alreadyassigned', array('@PROVID@' => $pname)));
+            }
+            else {
+                // add claimed id to user's identities store
+                $store->addUserDataEntry($this->provid, $claimedId);
+                $this->msg($this->success('loginadded', array('@PROVID@' => $pname)));
+            }
+        }
+
+        $this->success = true;
+        // redirect and exit process
+        send_redirect($this->restoreLocation());
+    }
+
+    /**
+     * Stores temporary login data until users creates local account.
+     */
+    function _storeTempAuth($claimedId, $svcdata, $pname) {
+        $_SESSION[DOKU_COOKIE]['fedauth']['tmpr'] = array(
+            'prid' => $this->provid,
+            'prnm' => $pname,
+            'ident' => $claimedId,
+            'svcd'  => $svcdata,
+            'email' => $_REQUEST['openid_sreg_email'],
+            'fullname' => $_REQUEST['openid_sreg_fullname'],
+            'nickname' => $_REQUEST['openid_sreg_nickname']
+        );
     }
 
 } /* fa_signedin */

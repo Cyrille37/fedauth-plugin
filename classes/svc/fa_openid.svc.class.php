@@ -38,6 +38,7 @@ class fa_openid_svc extends fa_service {
     function &getConsumer()
     {
         global $conf;
+
         if (isset($this->consumer)) {
             return $this->consumer;
         }
@@ -72,6 +73,7 @@ class fa_openid_svc extends fa_service {
         else {
             $url = str_replace('{username}', $username, $url);
         }
+
         // try to login with the service URL
         $consumer =& $this->getConsumer();
         $auth = $consumer->begin($url);
@@ -97,8 +99,13 @@ class fa_openid_svc extends fa_service {
         $consumer =& $this->getConsumer();
         $response = $consumer->complete($ref);
 
+        if ($_REQUEST['openid_mode'] != 'id_res') {
+            // TODO: handle openid_mode == 'cancel'
+            return -1; // authorization failed
+        }
+
         if ($response->status == Auth_OpenID_SUCCESS) {
-            $openid = isset($_REQUEST['openid_claimed_id']) ? $_GET['openid_claimed_id'] : $_GET['openid1_claimed_id'];
+            $openid = isset($_REQUEST['openid_claimed_id']) ? $_REQUEST['openid_claimed_id'] : $_REQUEST['openid1_claimed_id'];
             if (empty($openid)) {
                 return -2; // cannot find the claimed ID
             }

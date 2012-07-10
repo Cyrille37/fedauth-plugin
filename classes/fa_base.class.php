@@ -159,6 +159,13 @@ class fa_base {
         return array('msg' => $msg, 'code' => $code);
     }
 
+    /**
+     * Displays Dokuwiki message using message data array.
+     */
+    function msg($data) {
+        msg($data['msg'], $data['code']);
+    }
+
 } /* fa_base */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

@@ -34,15 +34,38 @@ class fa_login extends fa_base {
         return null;
     }
 
+    /**
+     * Renders the feredated login form.
+     */
     function html_login() {
         $this->html_login_service_from();
     }
 
+    /**
+     * Returns the 'click to ...' text.
+     */
     function getLoginText() {
         return empty($_SERVER['REMOTE_USER']) ? $this->lang['clicktologin'] : $this->lang['clicktoadd'];
     }
 
-    function getService($pro) {
+    /**
+     * Returns the user authorization data storage manager.
+     *
+     * @return the user authorization data storage manager object
+     */
+    function &getUserStore() {
+        $hfile = FEDAUTH_PLUGIN . "classes/usr/fa_filestore.class.php";
+        require_once($hfile);
+        return new fa_filestore();
+    }
+
+    /**
+     * Returns the service consumer depending on provider's service type.
+     *
+     * @param object $pro the authorization service provider configuration object
+     * @return the service consumer object
+     */
+    function &getService($pro) {
         // TODO: change to getType() once it is implemented in the fa_provider class
         $id = "fa_" . "openid" /*$pro->getType()*/;
         $hfile = FEDAUTH_PLUGIN . "classes/svc/$id.svc.class.php";
@@ -51,6 +74,40 @@ class fa_login extends fa_base {
         return new $class($pro);
     }
 
+    /**
+     * Builds an URL to redirect to, based on arbitrary conditions:
+     *  - uses $_GET value stored in session before authorization request, if it's available
+     *  - sets command to display logins management, if a new identity has been added
+     *  - or else uses current page $ID only
+     *
+     * @return string URL to be used as the redirect location
+     */
+    function restoreLocation() {
+        global $ID;
+
+        if (isset($_SESSION[DOKU_COOKIE]['fedauth']['stor'])) {
+            $get = $_SESSION[DOKU_COOKIE]['fedauth']['stor']['gt'];
+            $get = array_diff_key($get, array('id' => ''));
+            if (!empty($get)) {
+                $params = array_implode($get);
+                return wl($ID, $params, true, '&');
+            }
+        }
+        if (($_REQUEST['mode'] == 'add') || ($_REQUEST['mode'] == 'removed')) {
+            return wl($ID, 'do=fedauth', true, '&');
+        }
+        if ($_REQUEST['mode'] == 'register') {
+            return wl($ID, 'do=fedauth', true, '&') . '&fa[register]';
+        }
+        return wl($ID);
+    }
+
+    /**
+     * Renders the feredated login form.
+     *
+     * @param bool $return (optional) indicates whether the form should be returned as string or printed
+     * @return mixed generated form string or true, if printed
+     */
     function html_login_service_from($return=false) {
         global $ID, $conf, $auth;
 
@@ -60,7 +117,7 @@ class fa_login extends fa_base {
              . '<p>'.$this->lang['gotlogin'].' '.$this->getLoginText().'</p>'
              . '<form action="'.wl($ID, 'do=fedauth').'" method="post">'
              . '  <fieldset class="hidden">'
-             . '    <input type="hidden" name="do" value="fedauth" />'
+//             . '    <input type="hidden" name="do" value="fedauth" />'
              . formSecurityToken(false)
              . '  </fieldset>'
              . '  <div id="axwrap__large"><fieldset>'
@@ -78,12 +135,19 @@ class fa_login extends fa_base {
         return true;
     }
 
+    /**
+     * Renders the service provider link buttons.
+     *
+     * @param arrayref $source the source providers array
+     * @param bool $large (optional) true for large buttons, false for small
+     */
     function html_providers_list(&$source, $large=false) {
-        global $ID, $do, $sectok;
+        global $ID, $do;
 
         if (!is_array($source)) return '';
 
         $out = '';
+        $sectok = getSecurityToken();
 
         foreach ($source as $id => $pro) {
             if (!$pro->isEnabled()) continue;
@@ -108,6 +172,9 @@ class fa_login extends fa_base {
         return $out;
     }
 
+    /**
+     * Renders the form part with username input, if the service requires it.
+     */
     function html_service_signin() {
         if (!($pro = $this->manager->providers->get($this->provid))) {
             return '';
@@ -116,7 +183,7 @@ class fa_login extends fa_base {
             return '';
         }
         $out = '  <div id="axwrap__enterlogin"><fieldset>'
-             . '    <p>'.str_replace('@PROVID@', '<b>'.$pro->getName().'</b>', $this->lang['enterlogin']).'</p>'
+             . '    <p>'.str_replace('@PROVID@', $pro->getName(), $this->lang['enterlogin']).'</p>'
              . '<input type="text" name="fa_signinname" class="edit">'
              . '<input type="submit" class="button" name="fa[signin]['.$this->provid.']" value="' . $this->lang['btn_signin'] . '" />'
              . '  </fieldset></div>';
@@ -124,6 +191,9 @@ class fa_login extends fa_base {
         return $out;
     }
 
+    /**
+     * Renders the form part for general OpenID login.
+     */
     function html_general_openid() {
         if (!($pro = $this->manager->providers->get('openid'))) {
             return '';

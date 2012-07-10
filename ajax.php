@@ -11,6 +11,13 @@
  * @author     Aoi Karasu <aoikarasu@gmail.com>
  */
 
+// Default Dokuwiki AJAX handler requires $_GET['call'] or $_POST['call'] set
+// to process the request. Thus setting any of these variables is condition
+// for action_plugin_fedauth::isAjaxCall() to recognize an AJAX request.
+// Until this custom handler is reimpelemented, a dummy value is used to
+// signal that the authorization process should skip the timout check.
+$_GET['call'] = 'dummy';
+
 //fix for Opera XMLHttpRequests
 if(!count($_POST) && !empty($HTTP_RAW_POST_DATA)){
   parse_str($HTTP_RAW_POST_DATA, $_POST);

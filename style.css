@@ -1,3 +1,7 @@
+#fa__mylogins {
+   margin-left: 20px;
+}
+
 #fedauth__manager h2 {
     margin-left: 0;
 }
@@ -8,10 +12,12 @@
     padding: 0;
 }
 
+#fa__mylogins legend,
 #fedauth__manager legend {
     display: none;
 }
 
+#fa__mylogins fieldset,
 #fedauth__manager fieldset {
     width: auto;
 }
@@ -41,6 +47,7 @@
     text-align: left;
 }
 
+#fa__mylogins fieldset,
 #fedauth__manager .lprovs fieldset,
 #fedauth__manager .sprovs fieldset {
     color: #000;
@@ -51,6 +58,7 @@
     border-left: none;
 }
 
+#fa__mylogins fieldset.even,
 #fedauth__manager fieldset.even {
     background: #eee;
 }
@@ -71,6 +79,7 @@
     filter: alpha(opacity=70);
 }
 
+#fa__mylogins .legend,
 #fedauth__manager .lprovs .legend,
 #fedauth__manager .sprovs .legend {
     background: inherit;
@@ -87,12 +96,27 @@
     verical-align:middle;
 }
 
+#fa__mylogins .inuse,
 #fedauth__manager .legend .disabled {
     font-size: 0.6em;
     opacity: 0.7;
-    color: #555;
     font-style: italic;
     padding: 0px 0px 2px 10px;
+}
+
+#fa__mylogins .inuse {
+    font-weight: bold;
+    color: #e00;
+}
+
+#fa__mylogins .lastused {
+    color: #555;
+    font-size: 0.7em;
+    font-weight: bold;
+}
+
+#fedauth__manager .legend .disabled {
+    color: #555;
 }
 
 #fedauth__manager .lprovs .enable,
@@ -102,13 +126,24 @@
     width: auto;
 }
 
+#fa__mylogins .legend div,
 #fedauth__manager .details {
-    display: none;
-    margin-left: 31px;
     padding: 5px 5px 0px;
     font-size: 0.8em;
     line-height: 1.2em;
     color: #555;
+}
+
+#fa__mylogins .legend div {
+    margin-left: 16px;
+}
+
+#fedauth__manager .details {
+    margin-left: 31px;
+}
+
+#fedauth__manager .details {
+    display: none;
 }
 
 #fedauth__manager .imgdetails {
@@ -130,6 +165,11 @@
     float: left;
 }
 
+#fa__mylogins .floatimg {
+    margin: 0px 5px 0px 0px;
+    float: left;
+}
+
 #fedauth__manager .floatimg {
     margin: 0px 5px 0px 15px;
     float: left;
@@ -137,6 +177,7 @@
 
 #fa__authform {
     text-align: left;
+    margin-left: 20px;
 }
 
 #fa__authform fieldset {
