@@ -18,7 +18,7 @@ if (!defined('FEDAUTH_CHANGE_TYPE_REFRESH')) define('FEDAUTH_CHANGE_TYPE_REFRESH
 
 /**
  * Federated login file-based data storage class. Handles all
- * i/o operations performed on authorization user data.
+ * i/o operations performed on authentication user data.
  *
  * @author     Aoi Karasu <aoikarasu@gmail.com>
  */
@@ -120,9 +120,9 @@ class fa_filestore {
     }
 
     /**
-     * Loads user authorization data from file.
+     * Loads user authentication data from file.
      *
-     * @return mixed user authorization data array or false on failure
+     * @return mixed user authentication data array or false on failure
      */
     function &getUserData() {
         if (is_array($this->userData)) {
@@ -144,10 +144,10 @@ class fa_filestore {
     }
 
     /**
-     * Searches for user authorization data entry by identity.
+     * Searches for user authentication data entry by identity.
      *
      * @param string $claimedId identity associated with the user data entry
-     * @return mixed user authorization data array or false on failure
+     * @return mixed user authentication data array or false on failure
      */
     function getUserDataEntry($claimedId) {
         if (($entries =& $this->getUserData()) === false) return false;
@@ -181,10 +181,10 @@ class fa_filestore {
     }
 
     /**
-     * Adds an entry to the user authorization data file.
+     * Adds an entry to the user authentication data file.
      *
      * @param string $providerId identifier of the auth provider service
-     * @param string $claimedId user authorization identity
+     * @param string $claimedId user authentication identity
      * @param int $date (optional) timestamp of the change
      */
     function addUserDataEntry($providerId, $claimedId, $date=null) {
@@ -210,7 +210,7 @@ class fa_filestore {
     }
 
     /**
-     * Deletes user authorization data entry from the data file by identity.
+     * Deletes user authentication data entry from the data file by identity.
      *
      * @param string $claimedId identity associated with the user data entry
      * @return mixed deleted entry or false on failure
@@ -233,7 +233,7 @@ class fa_filestore {
     }
 
     /**
-     * Updates last used time for user authorization data entry by identity.
+     * Updates last used time for user authentication data entry by identity.
      *
      * @param string $claimedId identity associated with the user data entry
      */
@@ -272,11 +272,11 @@ class fa_filestore {
     }
 
     /**
-     * Adds an entry to the user authorization data changelog.
+     * Adds an entry to the user authentication data changelog.
      *
      * @param int $date timestamp of the change
      * @param string $providerId identifier of the auth provider service
-     * @param string $claimedId user authorization identity
+     * @param string $claimedId user authentication identity
      * @param string $type type of the change see FEDAUTH_CHANGE_TYPE_*
      * @param bool $isExternal (optional) is change made by user or as result of internal cleanup
      */

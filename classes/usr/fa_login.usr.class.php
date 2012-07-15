@@ -15,11 +15,11 @@
 class fa_login extends fa_base {
 
     /**
-     * Creates the class instance bound to a plugin instance and an authorization provider.
+     * Creates the class instance bound to a plugin instance and an authentication provider.
      *
-     * @param objref $manager object reference to the admin plugin
+     * @param objref $manager object reference to the action plugin
      * @param string $cmd name of the command to handle
-     * @param string $provid (optional) an authorization provider id
+     * @param string $provid (optional) an authentication provider id
      */
     function __construct(&$manager, $cmd, $provid='') {
         parent::__construct(&$manager, $cmd, $provid);
@@ -49,9 +49,9 @@ class fa_login extends fa_base {
     }
 
     /**
-     * Returns the user authorization data storage manager.
+     * Returns the user authentication data storage manager.
      *
-     * @return the user authorization data storage manager object
+     * @return the user authentication data storage manager object
      */
     function &getUserStore() {
         $hfile = FEDAUTH_PLUGIN . "classes/usr/fa_filestore.class.php";
@@ -62,7 +62,7 @@ class fa_login extends fa_base {
     /**
      * Returns the service consumer depending on provider's service type.
      *
-     * @param object $pro the authorization service provider configuration object
+     * @param object $pro the authentication service provider configuration object
      * @return the service consumer object
      */
     function &getService($pro) {
@@ -76,7 +76,7 @@ class fa_login extends fa_base {
 
     /**
      * Builds an URL to redirect to, based on arbitrary conditions:
-     *  - uses $_GET value stored in session before authorization request, if it's available
+     *  - uses $_GET value stored in session before authentication request, if it's available
      *  - sets command to display logins management, if a new identity has been added
      *  - or else uses current page $ID only
      *
@@ -150,7 +150,7 @@ class fa_login extends fa_base {
         $sectok = getSecurityToken();
 
         foreach ($source as $id => $pro) {
-            if (!$pro->isEnabled()) continue;
+            if (!$pro->isEnabled() || ($pro->getURL() == null)) continue;
 
             $btn = $this->cmd;
             $class = $large ? 'btnplarge' : 'btnpsmall';

@@ -15,11 +15,11 @@
 class fa_manage extends fa_login {
 
     /**
-     * Creates the class instance bound to a plugin instance and an authorization provider.
+     * Creates the class instance bound to a plugin instance and an authentication provider.
      *
      * @param objref $manager object reference to the admin plugin
      * @param string $cmd name of the command to handle
-     * @param string $provid (optional) an authorization provider id
+     * @param string $provid (optional) an authentication provider id
      */
     function __construct(&$manager, $cmd, $provid='') {
         parent::__construct(&$manager, $cmd, $provid);
