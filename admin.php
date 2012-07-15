@@ -15,13 +15,12 @@ if (!defined('DOKU_INC')) die();
 
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 if (!defined('FEDAUTH_PLUGIN')) define ('FEDAUTH_PLUGIN', DOKU_PLUGIN . 'fedauth/');
-
-/*if (!defined('CONFIG_INC')) define('CONFIG_INC', DOKU_CONF . 'fedauth/providers.php');
-if (!defined('DEFIMG_INC')) define('DEFIMG_INC', FEDAUTH_PLUGIN . 'images/');*/
+if (!defined('ADMIN_CMD_SCOPE')) define('ADMIN_CMD_SCOPE', 'adm');
 
 require_once(DOKU_PLUGIN . 'admin.php');
 require_once(FEDAUTH_PLUGIN . 'common.php');
-require_once(FEDAUTH_PLUGIN . "classes/fa_manage.adm.class.php");
+require_once(FEDAUTH_PLUGIN . "classes/fa_base.class.php");
+require_once(FEDAUTH_PLUGIN . "classes/adm/fa_manage.adm.class.php");
 
 class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
 
@@ -92,20 +91,12 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
             $this->provid = '';
         }
 
-        // create object to handle the command
-        $class = "fa_" . $this->cmd;
-
-        // Note: for some PHP configurations @require_once still may end up dying, thus file_exits
-        $hfile = FEDAUTH_PLUGIN . "classes/$class.adm.class.php";
-        if (file_exists($hfile)) {
-            require_once($hfile);
+        // load command class and process the command
+        $this->handler =& load_handler_class($this, $this->cmd, ADMIN_CMD_SCOPE, $this->provid, 'manage');
+        $result = $this->handler->process();
+        if (is_array($result) && empty($_REQUEST['ajax'])) {
+            msg($result['msg'], $result['code']);
         }
-        if (!class_exists($class)) {
-            $class = 'fa_manage';
-        }
-
-        $this->handler = new $class($this, $this->provid);
-        $this->msg = $this->handler->process();
     }
 
     /**
@@ -117,7 +108,7 @@ class admin_plugin_fedauth extends DokuWiki_Admin_Plugin {
         // enable direct access to language strings
         $this->setupLocale();
 
-        if ($this->handler === NULL) $this->handler = new fa_manage($this, $this->provid);
+        if ($this->handler === NULL) $this->handler = new fa_manage($this, $this->cmd, $this->provid);
 
         if (!$this->handler->ajax()) {
             print "Unrecognized ajax call: " . $this->cmd;

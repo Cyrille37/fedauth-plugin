@@ -13,22 +13,7 @@
  *
  * @author     Aoi Karasu <aoikarasu@gmail.com>
  */
-class fa_manage {
-
-    /**
-     * Admin plugin object owning this instance.
-     */
-    var $manager = null;
-
-    /**
-     * Locale data.
-     */
-    var $lang = array();
-
-    /**
-     * Identifier of currently processed authorization provider, if any.
-     */
-    var $provid = '';
+class fa_manage extends fa_base {
 
     /**
      * Source form/ajax call identifier used with provider lists.
@@ -36,20 +21,14 @@ class fa_manage {
     var $listSource = null;
 
     /**
-     * Process result.
-     */
-    var $success = false;
-
-    /**
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
+     * @param string $cmd name of the command to handle
      * @param string $provid (optional) an authorization provider id
      */
-    function __construct(&$manager, $provid='') {
-        $this->manager =& $manager;
-        $this->provid = $provid;
-        $this->lang =& $manager->lang;
+    function __construct(&$manager, $cmd, $provid='') {
+        parent::__construct(&$manager, $cmd, $provid);
     }
 
     /**
@@ -103,7 +82,7 @@ class fa_manage {
      * @return string the processing result message
      */
     function process() {
-        $method = 'process_' . $this->manager->cmd;
+        $method = 'process_' . $this->cmd;
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -117,7 +96,7 @@ class fa_manage {
      * @return bool true on success
      */
     function ajax() {
-        $method = 'handle_ajax_' . $this->manager->cmd;
+        $method = 'handle_ajax_' . $this->cmd;
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -220,7 +199,7 @@ class fa_manage {
             $check_disabled = ($protected) ? ' disabled="disabled"' : '';
 
             // this might need ajax disable check
-            $details = ($this->manager->cmd == 'details' && $this->provid == $id) ? $this->_html_details($id, true) : '';
+            $details = ($this->cmd == 'details' && $this->provid == $id) ? $this->_html_details($id, true) : '';
 
             $out .= '    <fieldset'.$class.'>'
                  .  '      <legend>'.$id.'</legend>'

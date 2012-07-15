@@ -22,10 +22,11 @@ class fa_restore extends fa_manage {
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
+     * @param string $cmd name of the command to handle
      * @param string $provid (optional) an authorization provider id
      */
-    function __construct(&$manager, $provid='') {
-        parent::__construct(&$manager, $provid);
+    function __construct(&$manager, $cmd, $provid='') {
+        parent::__construct(&$manager, $cmd, $provid);
     }
 
     /**

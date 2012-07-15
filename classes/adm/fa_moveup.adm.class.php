@@ -1,6 +1,6 @@
 <?php
 /**
- * Federated Login for DokuWiki - move down a provider class
+ * Federated Login for DokuWiki - move up a provider class
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @link       http://www.dokuwiki.org/plugin:fedauth
@@ -9,29 +9,30 @@
 
 /**
  * Authorization providers management class responsible
- * for moving a provider item down in the list order.
+ * for moving a provider item up in the list order.
  *
  * @author     Aoi Karasu <aoikarasu@gmail.com>
  */
-class fa_movedn extends fa_manage {
+class fa_moveup extends fa_manage {
 
     /**
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
+     * @param string $cmd name of the command to handle
      * @param string $provid (optional) an authorization provider id
      */
-    function __construct(&$manager, $provid='') {
-        parent::__construct(&$manager, $provid);
+    function __construct(&$manager, $cmd, $provid='') {
+        parent::__construct(&$manager, $cmd, $provid);
     }
 
     /**
-     * Performs the move down action in the providers list order.
+     * Performs the move up action in the providers list order.
      *
      * @return string the processing result message
      */
-    function process_movedn() {
-        if ($this->manager->providers->moveDown($this->provid)) {
+    function process_moveup() {
+        if ($this->manager->providers->moveUp($this->provid)) {
             $this->saveConfig();
             $this->success = true;
             return 'Your changes have been saved.';
@@ -44,11 +45,11 @@ class fa_movedn extends fa_manage {
      *
      * @return bool true on success
      */
-    function handle_ajax_movedn() {
+    function handle_ajax_moveup() {
         print '{"success":' . (int)$this->success . '}';
         return true;
     }
 
-} /* fa_movedn */
+} /* fa_moveup */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

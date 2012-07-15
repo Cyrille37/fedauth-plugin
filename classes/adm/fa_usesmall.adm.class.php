@@ -1,6 +1,6 @@
 <?php
 /**
- * Federated Login for DokuWiki - configure a provider as large button class
+ * Federated Login for DokuWiki - configure a provider as small button class
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @link       http://www.dokuwiki.org/plugin:fedauth
@@ -9,28 +9,29 @@
 
 /**
  * Authorization providers management class responsible
- * for moving a provider item to the large buttons list.
+ * for moving a provider item to the small buttons list.
  *
  * @author     Aoi Karasu <aoikarasu@gmail.com>
  */
-class fa_uselarge extends fa_manage {
+class fa_usesmall extends fa_manage {
 
     /**
      * Creates the class instance bound with the admin plugin and an authorization provider.
      *
      * @param objref $manager object reference to the admin plugin
+     * @param string $cmd name of the command to handle
      * @param string $provid (optional) an authorization provider id
      */
-    function __construct(&$manager, $provid='') {
-        parent::__construct(&$manager, $provid);
+    function __construct(&$manager, $cmd, $provid='') {
+        parent::__construct(&$manager, $cmd, $provid);
     }
 
     /**
-     * Performs the move action to the large provider button list.
+     * Performs the move action to the small provider button list.
      *
      * @return string the processing result message
      */
-    function process_uselarge() {
+    function process_usesmall() {
         if ($this->manager->providers->toggleSize($this->provid)) {
             $this->saveConfig();
             $this->success = true;
@@ -44,16 +45,16 @@ class fa_uselarge extends fa_manage {
      *
      * @return bool true on success
      */
-    function handle_ajax_uselarge() {
+    function handle_ajax_usesmall() {
         if ($this->success) {
-            // now, when in large providers list, output the move to small button info
-            print $this->_json_buttoninfo('usesmall');
+            // now, when in small providers list, output the move to large button info
+            print $this->_json_buttoninfo('uselarge');
             return true;
         }
         print '{"success":0}';
         return false;
     }
 
-} /* fa_uselarge */
+} /* fa_usesmall */
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
