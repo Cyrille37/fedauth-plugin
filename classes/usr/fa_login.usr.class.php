@@ -22,7 +22,7 @@ class fa_login extends fa_base {
      * @param string $provid (optional) an authentication provider id
      */
     function __construct(&$manager, $cmd, $provid='') {
-        parent::__construct(&$manager, $cmd, $provid);
+        parent::__construct($manager, $cmd, $provid);
     }
 
     /**
